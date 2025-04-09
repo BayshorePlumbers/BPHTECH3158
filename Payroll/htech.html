@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Technician Potential Kicker Calculator - Bayshore Plumbers</title>
+  <!-- On-screen style -->
+  <link rel="stylesheet" href="payrollstyle.css" type="text/css" />
+  <!-- Print style -->
+  <link rel="stylesheet" href="payrollprint.css" type="text/css" media="print" />
+  <style>
+    /* This inline style shows the hourly rate (for debugging) */
+    #rate,
+    label[for="rate"] {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="logo-container">
+      <img src="BP.png" alt="Bayshore Plumbers Logo" class="logo" />
+    </div>
+    <h1>Technician Potential Kicker Calculator</h1>
+  </div>
+
+  <!-- Main Container -->
+  <main class="container">
+    <section class="calculator">
+      <form id="kickerForm">
+        <!-- Managerial Assistance Button -->
+        <div class="button-group">
+          <button
+            type="button"
+            id="assistToggle"
+            class="red-button dynamic-button"
+            aria-label="Toggle Non Assisted Sale"
+          >
+            NON ASSISTED SALE
+          </button>
+        </div>
+
+        <!-- Primary Input Table: 4 Rows x 4 Columns -->
+        <table class="input-data">
+          <tbody>
+            <tr>
+              <!-- 1st row: Tech Name (col 1) + Invoice Number (col 2) -->
+              <th>Select Technicians:</th>
+              <td>
+                <div id="technicians" class="technicians-grid">
+                  <label><input type="checkbox" name="technicians" value="Brian Solis" />Brian Solis</label>
+                  <label><input type="checkbox" name="technicians" value="Bryan Magańa" />Bryan Magańa</label>
+                  <label><input type="checkbox" name="technicians" value="Edvin Garcia" />Edvin Garcia</label>
+                  <label><input type="checkbox" name="technicians" value="Jesus Escalante" />Jesus Escalante</label>
+                  <label><input type="checkbox" name="technicians" value="Jose Rodriguez (Chepe)" />Jose Rodriguez (Chepe)</label>
+                  <label><input type="checkbox" name="technicians" value="Ryan Felt" />Ryan Felt</label>
+                  <label><input type="checkbox" name="technicians" value="Walter Calderon" />Walter Calderon</label>
+                  <label><input type="checkbox" name="technicians" value="Kevin Stoumbaugh" />Kevin Stoumbaugh</label>
+                </div>
+              </td>
+              <th>Invoice Number:</th>
+              <td>
+                <input
+                  type="text"
+                  id="in"
+                  name="in"
+                  placeholder="Enter the invoice number here"
+                  aria-label="Invoice Number"
+                />
+              </td>
+            </tr>
+            <tr>
+              <!-- 2nd row: Total Price (col 1) + Project Duration (col 2) -->
+              <th>Total Price:</th>
+              <td>
+                <input
+                  type="number"
+                  id="tp"
+                  name="tp"
+                  placeholder="Enter the final selling price"
+                  min="0"
+                  aria-label="Total Price"
+                />
+              </td>
+              <th>Project Duration (Hours):</th>
+              <td>
+                <input
+                type="number"
+                id="pd"
+                name="pd"
+                placeholder="Enter project duration"
+                min="1"
+                value="1"
+                aria-label="Project Duration"
+                />
+              </td>
+            </tr>
+            <tr>
+              <!-- 3rd row: Material Expenses (col 1) + Job Address (col 2) -->
+              <th>Material Expenses:</th>
+              <td>
+                <input
+                  type="number"
+                  id="material"
+                  name="material"
+                  placeholder="Enter estimated material expenses"
+                  min="0"
+                  aria-label="Material Expenses"
+                />
+              </td>
+              <th>Job Address:</th>
+              <td>
+                <input
+                  type="text"
+                  id="ja"
+                  name="ja"
+                  placeholder="Enter job address"
+                  aria-label="Job Address"
+                />
+              </td>
+            </tr>
+            <tr>
+              <!-- 4th row: Other Expense (col 1) + Date (col 2) -->
+              <th>Other Expense:</th>
+              <td>
+                <input
+                  type="number"
+                  id="oe"
+                  name="oe"
+                  placeholder="Enter other expenses"
+                  aria-label="Other Expenses"
+                />
+              </td>
+              <th>Date:</th>
+              <td>
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  aria-label="Date"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Hidden Hourly Rate Field (if needed) -->
+        <input type="hidden" id="rate" name="rate" />
+
+        <!-- Separate Table for Job Category & Type -->
+        <table class="input-data">
+          <tbody>
+            <tr>
+              <th>Job Category:</th>
+              <td>
+                <select id="jobCategorySelect" name="jobCategory" aria-label="Select Job Category">
+                  <option value="">-- Select a Job Category --</option>
+                </select>
+              </td>
+            </tr>
+            <tr id="jobTypeSearchRow" style="display:none;">
+              <th>Search Job Type:</th>
+              <td>
+                <input
+                  type="text"
+                  id="jobTypeSearch"
+                  placeholder="Type to filter job types..."
+                  aria-label="Search Job Type"
+                />
+              </td>
+            </tr>
+            <tr id="jobTypeRow" style="display:none;">
+              <th>Job Type:</th>
+              <td>
+                <select id="jobTypeSelect" name="jobType" aria-label="Select Job Type">
+                  <option value="">-- Select a Job Type --</option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Labor Details: 2 Columns x 4 Rows -->
+        <table class="input-data">
+          <thead>
+            <tr>
+              <th colspan="4">LABOR DETAILS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Day 1:</th>
+              <td><input type="number" id="day1" name="day1" min="0" aria-label="Day 1 Hours" /></td>
+              <th>Day 2:</th>
+              <td><input type="number" id="day2" name="day2" min="0" aria-label="Day 2 Hours" /></td>
+            </tr>
+            <tr>
+              <th>Day 3:</th>
+              <td><input type="number" id="day3" name="day3" min="0" aria-label="Day 3 Hours" /></td>
+              <th>Day 4:</th>
+              <td><input type="number" id="day4" name="day4" min="0" aria-label="Day 4 Hours" /></td>
+            </tr>
+            <tr>
+              <th>Day 5:</th>
+              <td><input type="number" id="day5" name="day5" min="0" aria-label="Day 5 Hours" /></td>
+              <th>Additional Hours:</th>
+              <td><input type="number" id="ah" name="ah" min="0" aria-label="Additional Hours" /></td>
+            </tr>
+            <tr>
+              <th>Total Overtime Hours:</th>
+              <td><input type="number" id="toh" name="toh" min="0" aria-label="Total Overtime Hours" /></td>
+              <th>Total Hours:</th>
+              <td><input type="number" id="totalHours" name="totalHours" readonly aria-label="Total Hours" /></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Hidden Profit Field -->
+        <input type="hidden" id="profit" name="profit" value="0.00" />
+
+        <!-- Notes Section -->
+        <fieldset class="notes-section">
+          <legend>Job Description / Notes</legend>
+          <textarea
+            id="notes"
+            name="notes"
+            rows="4"
+            placeholder="Enter job description/notes here"
+            aria-label="Job Description/Notes"
+          ></textarea>
+        </fieldset>
+
+        <!-- Dynamic Questions Section -->
+<div class="question-section" style="display:none;">
+  <div id="question1">
+    <label>Is the payment received?</label>
+    <button type="button" class="dynamic-button" onclick="handleAnswer('yes', 1)" aria-label="Payment Received Yes">Yes</button>
+    <button type="button" class="dynamic-button" onclick="handleAnswer('no', 1)" aria-label="Payment Received No">No</button>
+    <button type="button" class="dynamic-button" onclick="handleAnswer('account', 1)" aria-label="Payment Received Account">BAYSHORE ACCOUNT</button>
+  </div>
+  <div id="question2" style="display:none;">
+    <label>How was the payment received?</label>
+    <button type="button" class="dynamic-button" onclick="handleAnswer('Debit', 2)" aria-label="Debit Card">Debit Card</button>
+    <button type="button" class="dynamic-button" onclick="handleAnswer('cash', 2)" aria-label="Cash">Cash</button>
+    <button type="button" class="dynamic-button" onclick="handleAnswer('online', 2)" aria-label="Online">Online</button>
+    <button type="button" class="dynamic-button" onclick="handleAnswer('creditCard', 2)" aria-label="Credit Card">Credit Card</button>
+    <!-- Changed the last option from "Account" to "Check" -->
+    <button type="button" class="dynamic-button" onclick="handleAnswer('check', 2)" aria-label="Check">Check</button>
+  </div>
+  <!-- New Question: Check Number (only shown if 'check' is selected) -->
+  <div id="questionCheck" style="display:none;">
+    <label>Enter Check Number:</label>
+    <input type="text" id="checkNumber" name="checkNumber" placeholder="Enter Check Number" aria-label="Check Number">
+  </div>
+  <div id="question3" style="display:none;">
+    <label>Is 3% credit card fee added?</label>
+    <button type="button" class="dynamic-button" onclick="handleAnswer('yes', 3)" aria-label="3% Fee Yes">Yes</button>
+    <button type="button" class="dynamic-button" onclick="handleAnswer('no', 3)" aria-label="3% Fee No">No</button>
+  </div>
+</div>
+
+
+
+        <!-- For Office Use Only (2 Rows x 2 Columns) -->
+        <table class="input-data">
+          <thead>
+            <tr>
+              <th colspan="4">FOR OFFICE USE ONLY</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>SW21/RP21:</th>
+              <td>
+                <input type="text" id="sw" name="sw" readonly aria-label="SW21/RP21" />
+              </td>
+              <th>WH32:</th>
+              <td>
+                <input type="text" id="wh" name="wh" readonly aria-label="WH32" />
+              </td>
+            </tr>
+            <tr>
+              <th>RD15/UL15:</th>
+              <td>
+                <input type="text" id="rd" name="rd" readonly aria-label="RD15/UL15" />
+              </td>
+              <th>BP%:</th>
+              <td>
+                <input type="text" id="bpp" name="bpp" readonly aria-label="BP Percent" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Output Section: Kicker in same style as "Total Commission" -->
+        <div class="commission-display">
+          Kicker: <span id="kicker">0.00</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="button-group">
+          <button
+            type="button"
+            id="calculateBtn"
+            aria-label="Calculate Potential Kicker"
+          >
+            Calculate Potential Kicker
+          </button>
+          <button type="button" id="printButton" aria-label="Print Document">
+            Print
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="htech.js"></script>
+</body>
+</html>
